@@ -1,0 +1,78 @@
+[
+  {
+    "company": "VERKADA INC",
+    "title": "Backend Engineer - Connectivity",
+    "url": "https://job-boards.greenhouse.io/verkada/jobs/5194598007",
+    "liveness": {
+      "status": "live",
+      "checked_on": "2026-10-02",
+      "via": "npm run ats:liveness (output: active)"
+    }
+  },
+  {
+    "company": "COHERE HEALTH INC",
+    "title": "Software Engineer II",
+    "url": "https://job-boards.greenhouse.io/coherehealth/jobs/7930480003",
+    "liveness": {
+      "status": "live",
+      "checked_on": "2026-10-02",
+      "via": "npm run ats:liveness (output: active)"
+    }
+  },
+  {
+    "company": "TALENT VINE",
+    "title": "Software Engineer (Full Stack) – Early Career",
+    "url": "https://recruiterflow.com/db_7a69c9023a9214124b1bf3a909223f08/jobs/69",
+    "liveness": {
+      "status": "live",
+      "checked_on": "2026-10-02",
+      "via": "npm run ats:liveness (output: active)"
+    },
+    "excluded_reason": "posting states U.S. citizenship required; employer is an unnamed client of a staffing agency"
+  },
+  {
+    "company": "INTUIT INC",
+    "title": "Software Engineer 1 (New College Grad)",
+    "url": "https://jobs.intuit.com/job/mountain-view/software-engineer-1/27595/87369448720",
+    "liveness": {
+      "status": "live",
+      "checked_on": "2026-10-02",
+      "via": "npm run ats:liveness (output: active)"
+    }
+  },
+  {
+    "company": "CONFIDO INC",
+    "title": "New Grad Software Engineer",
+    "url": "https://jobs.ashbyhq.com/confido/69c0e572-b2f4-442f-beb8-1240155c629e",
+    "liveness": {
+      "status": "live",
+      "checked_on": "2026-10-02",
+      "via": "npm run ats:liveness (output: active)"
+    }
+  },
+  {
+    "company": "DATABRICKS INC",
+    "title": "Software Engineer",
+    "url": null
+  },
+  {
+    "company": "WHATNOT INC",
+    "title": "Software Engineer",
+    "url": null
+  },
+  {
+    "company": "GRAMMARLY INC",
+    "title": "Software Engineer",
+    "url": null
+  },
+  {
+    "company": "FOURSQUARE LABS INC",
+    "title": "Software Engineer",
+    "url": null
+  },
+  {
+    "company": "Google",
+    "title": "Software Engineer",
+    "url": null
+  }
+]
