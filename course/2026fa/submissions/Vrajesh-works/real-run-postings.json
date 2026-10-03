@@ -51,6 +51,29 @@
     }
   },
   {
+    "company": "BOEING",
+    "title": "Software Engineer - Entry Level (Boeing Intelligence & Analytics)",
+    "url": "https://jobs.boeing.com/job/annapolis-junction/software-engineer-entry-level/185/100460245872",
+    "liveness": {
+      "status": "live",
+      "checked_on": "2026-10-03",
+      "via": "npm run ats:liveness (output: active)"
+    },
+    "excluded_reason": "requires an active TS/SCI with Polygraph clearance, which to my knowledge requires U.S. citizenship; on-site only"
+  },
+  {
+    "company": "MOTION RECRUITMENT PARTNERS",
+    "title": "Backend DevOps Engineer (Senior DevOps / Embedded, 6+ years)",
+    "employment_type": "contract",
+    "track": "opt-bridge",
+    "url": "https://motionrecruitment.com/tech-jobs/danvers-/contract/backend-devops-engineer/885698",
+    "liveness": {
+      "status": "live",
+      "checked_on": "2026-10-03",
+      "via": "npm run ats:liveness (output: active)"
+    }
+  },
+  {
     "company": "DATABRICKS INC",
     "title": "Software Engineer",
     "url": null

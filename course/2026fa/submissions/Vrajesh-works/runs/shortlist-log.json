@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-02T16:58:06.854Z",
+  "generated_at": "2026-10-03T15:24:39.588Z",
   "tool": "shortlist.mjs",
   "inputs": {
-    "as_of": "2026-10-02",
+    "as_of": "2026-10-03",
     "opt_start": "2027-01-15",
     "unemployment_days": 90,
     "hiring_lag_days": 45,
@@ -12,7 +12,7 @@
     "csv_sha256": "eccdee2addf472b1639269f42eec693b083b7ce251347d5fd0b2856cfdae6270",
     "csv_rows": 30369,
     "data_snapshot_end": "2025-09-26",
-    "snapshot_gap_days": 371,
+    "snapshot_gap_days": 372,
     "postings_file": "course\\2026fa\\submissions\\Vrajesh-works\\real-run-postings.json"
   },
   "labels": {
@@ -24,8 +24,8 @@
   },
   "timeline": {
     "factor": 1,
-    "days_remaining": 195,
-    "slack_days": 150,
+    "days_remaining": 194,
+    "slack_days": 149,
     "window_end": "2027-04-15"
   },
   "role_quality": {
@@ -36,9 +36,10 @@
     "cognitive_pivot_score": 3.834
   },
   "counts": {
-    "postings": 10,
+    "postings": 12,
     "scored": 3,
-    "unscored": 7
+    "opt_bridge_checked": 1,
+    "unscored": 8
   },
   "scorer_summary": "✓ scored 3 roles → Apply 1 · Consider 1 · Skip 1 (skip 33%)",
   "human_gate": {
@@ -218,7 +219,7 @@
         "latest_funding_date": "2024-06-25",
         "latest_funding_stage": "Pre-Seed",
         "funding_status": "stale",
-        "months_since_funding": 27.2
+        "months_since_funding": 27.3
       },
       "status": "scored",
       "liveness": {
@@ -267,6 +268,33 @@
     },
     {
       "role_id": "p6",
+      "company": "BOEING",
+      "title": "Software Engineer - Entry Level (Boeing Intelligence & Analytics)",
+      "url": "https://jobs.boeing.com/job/annapolis-junction/software-engineer-entry-level/185/100460245872",
+      "status": "excluded",
+      "excluded_reason": "requires an active TS/SCI with Polygraph clearance, which to my knowledge requires U.S. citizenship; on-site only",
+      "source": "your-input",
+      "next_action": "Skip: requires an active TS/SCI with Polygraph clearance, which to my knowledge requires U.S. citizenship; on-site only [your-input, read from the posting by a human]"
+    },
+    {
+      "role_id": "p7",
+      "company": "MOTION RECRUITMENT PARTNERS",
+      "title": "Backend DevOps Engineer (Senior DevOps / Embedded, 6+ years)",
+      "url": "https://motionrecruitment.com/tech-jobs/danvers-/contract/backend-devops-engineer/885698",
+      "track": "opt-bridge",
+      "employment_type": "contract",
+      "timeline_factor": 1,
+      "csv_match": "not-in-csv",
+      "status": "opt-bridge-open",
+      "liveness": {
+        "status": "live",
+        "checked_on": "2026-10-03",
+        "via": "npm run ats:liveness (output: active)"
+      },
+      "next_action": "OPT-bridge candidate. Apply only if the role is in your field and a person has confirmed it is allowed on your OPT (contract terms, employer requirements). No sponsorship record is needed or used."
+    },
+    {
+      "role_id": "p8",
       "company": "DATABRICKS INC",
       "title": "Software Engineer",
       "url": null,
@@ -292,7 +320,7 @@
       "next_action": "Network target: sponsor history in the record; no posting URL was supplied (not checked whether one exists)."
     },
     {
-      "role_id": "p7",
+      "role_id": "p9",
       "company": "WHATNOT INC",
       "title": "Software Engineer",
       "url": null,
@@ -317,7 +345,7 @@
       "next_action": "Network target: sponsor history in the record; no posting URL was supplied (not checked whether one exists)."
     },
     {
-      "role_id": "p8",
+      "role_id": "p10",
       "company": "GRAMMARLY INC",
       "title": "Software Engineer",
       "url": null,
@@ -336,13 +364,13 @@
         "latest_funding_date": "2025-07-17",
         "latest_funding_stage": "Series D+",
         "funding_status": "recent",
-        "months_since_funding": 14.5
+        "months_since_funding": 14.6
       },
       "status": "no-posting",
       "next_action": "Network target: sponsor history in the record; no posting URL was supplied (not checked whether one exists)."
     },
     {
-      "role_id": "p9",
+      "role_id": "p11",
       "company": "FOURSQUARE LABS INC",
       "title": "Software Engineer",
       "url": null,
@@ -361,13 +389,13 @@
         "latest_funding_date": "2025-04-07",
         "latest_funding_stage": "Seed",
         "funding_status": "recent",
-        "months_since_funding": 17.8
+        "months_since_funding": 17.9
       },
       "status": "no-posting",
       "next_action": "Network target: sponsor history in the record; no posting URL was supplied (not checked whether one exists)."
     },
     {
-      "role_id": "p10",
+      "role_id": "p12",
       "company": "Google",
       "title": "Software Engineer",
       "url": null,

@@ -27,8 +27,8 @@ After the work (`after-verify.txt`, `after-doctor.txt`): `✓ manifest check pas
 
 ```text
 $ node --test scripts/contrib/2026fa/Vrajesh-works-ms-is-swe-opt-shortlist/shortlist.test.mjs
-# tests 15
-# pass 15
+# tests 17
+# pass 17
 # fail 0
 ```
 
@@ -42,13 +42,13 @@ Fixture run (fictional companies; liveness values are fixtures, not checks):
 ✓ 4/7 scored · ✓ scored 4 roles → Apply 1 · Consider 1 · Skip 2 (skip 50%)
 ```
 
-Real-data run (full CSV, 10 entries, 5 real postings checked with `npm run ats:liveness` on 2026-10-02):
+Real-data run (full CSV, 12 entries, 7 real postings checked with `npm run ats:liveness` on 2026-10-02 and 2026-10-03):
 
 ```text
-✓ 3/10 scored · ✓ scored 3 roles → Apply 1 · Consider 1 · Skip 1 (skip 33%)
+✓ 3/12 scored · ✓ scored 3 roles → Apply 1 · Consider 1 · Skip 1 (skip 33%)
 ```
 
-Unscored: Talent Vine `excluded` (citizenship required), Intuit and Google `not-in-csv`, four `no-posting` networking targets. Full output: `runs/shortlist-report.md`; narrative and attestation: `WORKED-RUN.md`. No real *expired* posting was available, so the dead-posting path is covered by a fixture only.
+Not scored: Talent Vine and Boeing `excluded` (citizenship; TS/SCI clearance), Motion Recruitment `opt-bridge-open` (OPT-bridge track, no score), Intuit and Google `not-in-csv`, four `no-posting` networking targets. Full output: `runs/shortlist-report.md`; narrative and attestation: `WORKED-RUN.md`. No real *expired* posting was available, so the dead-posting path is covered by a fixture only.
 
 ## Failure cases exercised
 

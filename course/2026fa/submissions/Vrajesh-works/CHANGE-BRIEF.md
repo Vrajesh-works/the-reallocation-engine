@@ -52,6 +52,18 @@ The 80 Days data is a snapshot that ends around September 2025 (newest funding d
 
 ## Revisions
 
-_(none yet — append dated entries here; do not edit the text above)_
+### 2026-10-03
 
-Reviewed and adopted by: ______________________ (Vrajesh) · date: __________
+**Prediction 5 (funding looks stale) was partly wrong.** I predicted "recently funded" would look stale or empty. The first real run showed the opposite: funding dates like 2025-09-08 counted as "recent" under the 24-month rule, even though the data ends 372 days before the run. The rule hides how old the data is. The part I got right is that the data is a year old and that the "entry-level" label cannot be verified from it.
+
+**Scope changed: OPT-bridge track.** The brief only asked "does this company sponsor?". I realized my immediate goal is a job right after graduating, including a contract role that does not sponsor but can be worked on OPT. A no-sponsor role would have been a Skip. I added a separate `opt-bridge` track that checks only liveness and timeline and uses no sponsorship score. It cannot see seniority or fit.
+
+**Failure cases I did not predict.**
+- A posting can rule me out through text no dataset shows: Talent Vine requires U.S. citizenship, and Boeing's entry-level role requires an active TS/SCI clearance. I added a human `excluded_reason`.
+- A large employer can be missing from the data (Intuit, Boeing), so "not in the data" says nothing about whether they sponsor.
+- A young company with no approvals (Confido) can get a Skip that may be a false negative.
+- A break attempt found that `--as-of 2026-02-30` was accepted; fixed.
+
+**Failure cases I predicted that held.** A company missing from the CSV gives `not-in-csv`, a closed OPT window gates every role to Skip, and unresolved liveness is never defaulted to live.
+
+Reviewed and adopted by: Vrajesh Mathurbhai Nasit · date: 10/03/2026
