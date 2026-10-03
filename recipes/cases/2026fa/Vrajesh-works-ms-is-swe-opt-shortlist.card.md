@@ -22,6 +22,7 @@ Answer: for the companies I am considering, does the repository's record show sp
 - Whether a posting is **open to you**. Text such as "U.S. citizenship required" is invisible to every dataset here. You read it, and you record it as `excluded_reason`. (Found on a real posting in the worked run.)
 - Anything about a company that is **not in the file**. The data comes from startup funding filings, so large employers can be missing, and a missing row is not evidence that they don't sponsor.
 - Who the employer is when a **staffing agency** posts for an unnamed client.
+- Whether a role you would take **without sponsorship** (for example a contract role on OPT) is allowed on your OPT. Mark such a posting `"track": "opt-bridge"`. The program then checks only that the posting is live (as you typed) and that your timeline has room, and it uses **no sponsorship score**. Whether the role is a contract, in your field and permitted on your OPT is for you to confirm with your school's international office and the employer.
 - Your real OPT end date, the true length of your allowance, or H-1B cap timing.
 - Pay for an entry-level role in your city. The wage shown is the national median for the occupation, and it moves no decision.
 

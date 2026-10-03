@@ -54,6 +54,8 @@ Each gate stops the row at the first failure. A person clears gates; the program
 | G0 inputs | CSV has the six required columns; SOC row exists in the compact file; dates parse as `YYYY-MM-DD`; `--fit` in [0,1]; out-dir is not under `data/`, `recipes/`, `logs/`, `chapters/`, `book/`, `reports/` or `scripts/` (except `scripts/contrib/`) | continue | exit code 2 with the reason; no output written |
 | G1 company match | exact match after upper-casing and removing `.` and `,` | one row | none → `not-in-csv`; several → `ambiguous`; neither is scored |
 | G2b eligibility (human) | a person reads the posting text; if it rules the student out (citizenship required, security clearance, location) they set `excluded_reason` on that posting | no `excluded_reason`: continue | non-empty `excluded_reason` → `excluded`, never scored, shown as a labeled `your-input` Skip. A blank reason excludes nothing |
+| G2c track | `track` is absent or `"sponsorship"` (default: scored on sponsorship history) or `"opt-bridge"` (a role you would take on OPT without sponsorship, e.g. a contract role); any other value is rejected | continue on that track | unknown value → `invalid-posting`, never silently scored |
+| G2d bridge checks | `opt-bridge` rows use only G2 (liveness) and G3 (timeline); no sponsorship vote, and the scorer is not called | live and timeline factor > 0 → `opt-bridge-open` | not live or timeline factor 0 → `opt-bridge-closed` (Skip); undated or uncertain liveness → `liveness-unresolved`; no URL → `opt-bridge-no-posting` |
 | G2 liveness (gate) | posting has a URL and a `liveness` object with `status` of `live` or `dead` **and** a `checked_on` date | factor 1 or 0 | no URL → `no-posting`; anything else → `liveness-unresolved`; never defaulted to live |
 | G3 timeline (gate) | `slack = (opt_start + unemployment_days) − as_of − hiring_lag`; factor 0 if slack ≤ 0, 1 if slack ≥ lag, else slack/lag | factor passed to scorer | window already past or lag does not fit → factor 0, scorer returns Skip (gated) |
 | G4 human | a named person opens each Apply/Consider posting and confirms it is live | `human_gate` edited by that person in a run log | stays `cleared: false` |
@@ -71,6 +73,7 @@ This is the boundary the grade rests on.
 | That the scorer was run on the exact `roles.json` written beside the log | That a posting is live. A human ran the checker and typed the result |
 | That a name was matched exactly, not fuzzily | That the matched legal entity is the employer you mean. A staffing agency's row (or absence) says nothing about its unnamed client |
 | That a company is **absent** from the CSV | That absence means "does not sponsor". The data covers funded startups; large employers are often missing |
+| That an `opt-bridge` posting is live (as typed) and that your timeline has room | That the role is a contract, is in your field, is allowed on your OPT, or meets the employer's own requirements. The program does not check any of those; a person confirms with the school's international office and the employer. The scorer's sponsorship weight is not rescaled for a no-sponsorship profile (its maximum score would be 0.30 × fit), which is why this track bypasses the scorer instead of reusing it |
 | That a posting's liveness was typed with a date | Whether a posting is open to you: citizenship, clearance and location text is read only by a human |
 | The national median wage and pivot score for SOC 15-1252 | Entry-level pay, local pay, or what any employer offers |
 
@@ -104,6 +107,8 @@ node scripts/contrib/2026fa/Vrajesh-works-ms-is-swe-opt-shortlist/shortlist.mjs 
 |---|---|
 | Apply | Tailor an application — spends the 2 hours |
 | Consider | Tailor only if Apply is exhausted; the soft spot is printed |
+| `opt-bridge-open` | Candidate for a job you can start soon without sponsorship. A person confirms the role is in your field and allowed on your OPT, then tailors an application |
+| `opt-bridge-closed` | Skip (posting not live, or the timeline gate is closed) |
 | Skip, posting dead, tier Proven/Likely | Network, don't apply — feeds the networking 3 |
 | `no-posting`, tier Proven/Likely | Network target |
 | `liveness-unresolved` | Run the liveness checker, retype, re-run |
