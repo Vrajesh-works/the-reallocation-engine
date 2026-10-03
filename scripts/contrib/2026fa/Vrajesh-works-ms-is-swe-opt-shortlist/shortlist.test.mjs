@@ -100,6 +100,35 @@ test('a posting a human excluded (e.g. citizenship required) is never scored, ev
   assert.equal(ev.roles.length, 1);
 });
 
+const bridge = (over = {}) => ({ company: 'EXAMPLE NOT IN FILE CORP', title: 'Contract Software Engineer', employment_type: 'contract', track: 'opt-bridge',
+  url: 'https://example.invalid/jobs/20', liveness: { status: 'live', checked_on: '2026-10-01' }, ...over });
+
+test('opt-bridge track: a live posting is a candidate with NO sponsorship score, even when the company is absent from the CSV', () => {
+  const ev = evaluate({ csv: csv(), postings: [bridge(), bridge({ company: 'EXAMPLE NO SPONSOR INC' })], ...base });
+  assert.equal(ev.results[0].status, 'opt-bridge-open');
+  assert.equal(ev.results[0].csv_match, 'not-in-csv');
+  assert.equal(ev.results[1].status, 'opt-bridge-open');   // a no-sponsor company is NOT a Skip on this track
+  assert.equal(ev.results[1].tier, undefined);
+  assert.equal(ev.roles.length, 0);                         // the scorer never sees a bridge row
+  assert.match(ev.results[0].next_action, /confirmed it is allowed on your OPT/);
+});
+
+test('opt-bridge track: dead posting, closed timeline, unresolved liveness, no URL and unknown track are all handled without inventing a value', () => {
+  const dead = evaluate({ csv: csv(), postings: [bridge({ liveness: { status: 'dead', checked_on: '2026-10-01' } })], ...base });
+  assert.equal(dead.results[0].status, 'opt-bridge-closed');
+  assert.match(dead.results[0].next_action, /not live/);
+  const late = evaluate({ csv: csv(), postings: [bridge()], ...base, asOf: '2027-04-01' });
+  assert.equal(late.results[0].status, 'opt-bridge-closed');
+  assert.match(late.results[0].next_action, /OPT window closes/);
+  const unresolved = evaluate({ csv: csv(), postings: [bridge({ liveness: { status: 'live' } }), bridge({ url: null })], ...base });
+  assert.equal(unresolved.results[0].status, 'liveness-unresolved');
+  assert.equal(unresolved.results[1].status, 'opt-bridge-no-posting');
+  const typo = evaluate({ csv: csv(), postings: [bridge({ track: 'opt_bridge' })], ...base });
+  assert.equal(typo.results[0].status, 'invalid-posting');   // a typo must not silently score on the sponsorship track
+  const excluded = evaluate({ csv: csv(), postings: [bridge({ excluded_reason: 'U.S. citizenship required' })], ...base });
+  assert.equal(excluded.results[0].status, 'excluded');      // a human exclusion beats the bridge track
+});
+
 test('schema drift: a missing required column stops the run', () => {
   const c = parseCsv('company_name,Total Approvals\nX,1\n');
   assert.throws(() => evaluate({ csv: c, postings: [], ...base }), /schema drift/);

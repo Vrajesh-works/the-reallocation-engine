@@ -27,6 +27,10 @@ Postings file shape (`liveness` stays `null` until you have run `npm run ats:liv
   "liveness": {"status": "live", "checked_on": "2026-10-01"}}]
 ```
 
+### Two tracks
+
+By default a posting is scored on H-1B sponsorship history. For a role you would take on OPT **without** sponsorship (for example a contract role), add `"track": "opt-bridge"` (and optionally `"employment_type": "contract"`). That posting is checked only for a live posting and timeline room, gets no sponsorship score, and never goes to the scorer. You still confirm eligibility with your school's international office and the employer.
+
 ## Test (offline, no network)
 
 ```bash
@@ -37,5 +41,5 @@ node scripts/conformance.mjs scripts/contrib/2026fa/Vrajesh-works-ms-is-swe-opt-
 ## Files
 
 - `shortlist.mjs` — the program; calls `scripts/score/role-scorer.mjs`, never a copy.
-- `shortlist.test.mjs` — 15 tests; boundary cases for tiers, the countdown, liveness, impossible dates and human-excluded postings.
+- `shortlist.test.mjs` — 17 tests; boundary cases for tiers, the countdown, liveness, impossible dates, human-excluded postings and the OPT-bridge track.
 - `fixtures/` — fictional companies (`EXAMPLE ...`) and `.invalid` URLs. The liveness values in the fixture are **not** real checks.

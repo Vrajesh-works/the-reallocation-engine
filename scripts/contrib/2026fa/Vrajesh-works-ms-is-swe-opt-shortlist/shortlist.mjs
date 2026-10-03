@@ -150,6 +150,26 @@ export function evaluate({ csv, postings, asOf, optStart, unemploymentDays, lagD
       results.push({ ...base, status: 'excluded', excluded_reason: p.excluded_reason.trim(), source: 'your-input', next_action: `Skip: ${p.excluded_reason.trim()} [your-input, read from the posting by a human]` });
       return;
     }
+    // Two tracks. "sponsorship" (default) is scored on H-1B sponsorship history. "opt-bridge" is for a role
+    // the student would take on OPT without sponsorship (e.g. a contract role): only the liveness and
+    // timeline gates apply, no sponsorship vote, and the scorer is NOT called for it.
+    if (p.track !== undefined && p.track !== 'sponsorship' && p.track !== 'opt-bridge') {
+      results.push({ ...base, status: 'invalid-posting', next_action: `Unknown track "${p.track}"; use "sponsorship" or "opt-bridge". Not scored.` });
+      return;
+    }
+    if (p.track === 'opt-bridge') {
+      const found = index.get(normName(p.company)) || [];
+      const info = { ...base, track: 'opt-bridge', employment_type: p.employment_type ?? null, timeline_factor: tl.factor,
+        csv_match: found.length === 0 ? 'not-in-csv' : found.length > 1 ? 'ambiguous' : 'matched (informational only; no sponsorship vote on this track)' };
+      if (!p.url) { results.push({ ...info, status: 'opt-bridge-no-posting', next_action: 'No posting URL supplied; nothing to check.' }); return; }
+      const bf = livenessFactor(p.liveness);
+      if (bf === null) { results.push({ ...info, status: 'liveness-unresolved', next_action: `Run: npm run ats:liveness -- ${p.url}  then transcribe status + checked_on into the postings file.` }); return; }
+      if (bf === 0) { results.push({ ...info, status: 'opt-bridge-closed', liveness: p.liveness, next_action: 'Skip: posting is not live.' }); return; }
+      if (tl.factor === 0) { results.push({ ...info, status: 'opt-bridge-closed', liveness: p.liveness, next_action: 'Skip: your OPT window closes before a hire of this length can finish.' }); return; }
+      results.push({ ...info, status: 'opt-bridge-open', liveness: p.liveness,
+        next_action: 'OPT-bridge candidate. Apply only if the role is in your field and a person has confirmed it is allowed on your OPT (contract terms, employer requirements). No sponsorship record is needed or used.' });
+      return;
+    }
     const hits = index.get(normName(p.company)) || [];
     if (hits.length === 0) { results.push({ ...base, status: 'not-in-csv', next_action: 'No record in this dataset (built from startup funding filings, so large or public employers are often absent). Absence is not evidence either way: check the legal entity name, then look for the employer\'s own sponsorship record.' }); return; }
     if (hits.length > 1) { results.push({ ...base, status: 'ambiguous', candidates: hits.map((h) => h.company_name), next_action: 'Two or more CSV rows match; pick the entity by hand.' }); return; }
@@ -201,7 +221,7 @@ function renderReport({ run, soc, rows, scorerLine }) {
   const counts = run.counts;
   o.push('# Sponsor shortlist — entry-level software engineer, F-1 OPT');
   o.push('');
-  o.push(`This report checks ${counts.postings} companies you are considering against sponsorship history in the 80 Days to Stay data and against your own OPT countdown, then says Apply, Consider or Skip for each one with every input labeled. ${counts.scored} could be scored; ${counts.unscored} could not, and the table says why. Nothing here is a final decision: a person has to clear the liveness gate for each posting. Treat funding information as old: the data ends ${run.inputs.data_snapshot_end ?? 'at an unknown date'}, ${run.inputs.snapshot_gap_days ?? '?'} days before the as-of date.`);
+  o.push(`This report checks ${counts.postings} companies you are considering against sponsorship history in the 80 Days to Stay data and against your own OPT countdown, then says Apply, Consider or Skip for each one with every input labeled. ${counts.scored} could be scored on sponsorship history; ${counts.opt_bridge_checked} on the OPT-bridge track (live posting and timeline only, no sponsorship score); and ${counts.unscored} could not be handled, with the reason in the table. Nothing here is a final decision: a person has to clear the liveness gate for each posting. Treat funding information as old: the data ends ${run.inputs.data_snapshot_end ?? 'at an unknown date'}, ${run.inputs.snapshot_gap_days ?? '?'} days before the as-of date.`);
   o.push('');
   o.push('## Results');
   o.push('');
@@ -223,6 +243,7 @@ function renderReport({ run, soc, rows, scorerLine }) {
   o.push('| "Non-senior software title" | inference from title wording | the CSV lists top titles only; it does not say a company hires entry-level |');
   o.push('| Liveness factor | your-input | transcribed from a human-run `npm run ats:liveness`; not checked by this program |');
   o.push(`| Timeline factor | your-input | OPT start ${run.inputs.opt_start}, ${run.inputs.unemployment_days}-day window (ends ${run.timeline.window_end}), hiring lag ${run.inputs.hiring_lag_days} days, as-of ${run.inputs.as_of}: ${run.timeline.days_remaining} days remain, factor ${run.timeline.factor} |`);
+  o.push('| OPT-bridge rows (`opt-bridge-open` / `opt-bridge-closed`) | rule over your-input | only the liveness result you typed and the timeline arithmetic; contract status, field relevance and whether the role is allowed on your OPT are NOT checked here. Confirm with your school\'s international office and the employer |');
   o.push(`| Fit | your-input | one flat value (${run.inputs.fit}) for every company; it does not rank companies |`);
   o.push(`| Role quality, SOC ${soc.soc} ${soc.title} | record, informational only | national median wage ${soc.annual_median_wage} (OEWS ${soc.oews_year}), cognitive pivot score ${soc.cognitive_pivot_score}. The scorer's role_quality weight is 0, so this changes no decision. National, not entry-level, not local. |`);
   o.push('');
@@ -274,7 +295,10 @@ export function main(argv) {
     inputs: { as_of: asOf, opt_start: optStart, unemployment_days: unemploymentDays, hiring_lag_days: lagDays, fit, soc: socCode, csv: path.relative(REPO, csvPath), csv_sha256: crypto.createHash('sha256').update(csvText).digest('hex'), csv_rows: csv.records.length, data_snapshot_end: ev.snapshotEnd, snapshot_gap_days: snapshotGap, postings_file: path.relative(REPO, path.resolve(postingsPath)) },
     labels: { liveness: 'your-input (transcribed)', timeline: 'your-input', fit: 'your-input', sponsorship: 'record fields -> rule', role_quality: 'record, informational' },
     timeline: ev.timeline, role_quality: soc,
-    counts: { postings: postings.length, scored: ev.roles.length, unscored: postings.length - ev.roles.length },
+    counts: (() => {
+      const bridge = rows.filter((r) => r.status === 'opt-bridge-open' || r.status === 'opt-bridge-closed').length;
+      return { postings: postings.length, scored: ev.roles.length, opt_bridge_checked: bridge, unscored: postings.length - ev.roles.length - bridge };
+    })(),
     scorer_summary: scorerLine, human_gate: { cleared: false, by: null, date: null }, results: rows,
   };
   fs.writeFileSync(path.join(outDir, 'shortlist-log.json'), JSON.stringify(run, null, 2) + '\n');
